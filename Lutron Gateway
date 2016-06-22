@@ -15,7 +15,7 @@
  */
 definition(
     name: "Lutron Gateway - Sandbox",
-    namespace: "TESTING",
+    namespace: "WeiWooWei",
     author: "Bruce Ravenel",
     description: "Create virtual devices for each Lutron device and control Lutron with them",
     category: "Convenience",
@@ -67,13 +67,13 @@ def updated() {
 
 def initialize() {
 	state.myDevices = [:]										//Defining devices map
-	log.debug "Made it inside the initialize function"			//Test to see if we made it here
+	log.debug "Made it inside the main initialize function"			//Test to see if we made it here
 	for (int i = 0 ; i < howMany; i++) {						//Iterating through number of devices specified by user
 	log.debug "Run through the for loop = $i"					//Showing which run through the loop we're on
         def thisCmd = settings.find {it.key == "dCmd$i"}		// -Not sure here-
-        log.debug "Value of thisCmd at this point - $thisCmd"	//Printing value of thisCmd
+        log.debug "Value of thisCmd at this point line 74 - $thisCmd"	//Printing value of thisCmd
         def thisName = settings.find {it.key == "dName$i"}		// -Not sure here-
-        log.debug "Value of thisName at this point - $thisName"		//Printing value of thisName
+        log.debug "Value of thisName at this point Line 76- $thisName"		//Printing value of thisName
     	def deviceId = "Lutron" + "$i-" + app.id				//Setting name of device
         def myDevice = getChildDevice(deviceId)
         if(!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])

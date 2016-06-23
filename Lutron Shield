@@ -46,6 +46,7 @@ def parse(String description) {
 // Commands sent to the device
 def sendMsg(String s) {
 	zigbee.smartShield(text: s).format()
+    log.debug "Line49 in Lutron Shield handler"
 }
 
 def hello() {

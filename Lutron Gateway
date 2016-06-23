@@ -14,7 +14,7 @@
  *
  */
 definition(
-    name: "Lutron Gateway - Sandbox",
+    name: "Lutron Gateway - Sandbox2",
     namespace: "WeiWooWei",
     author: "Bruce Ravenel",
     description: "Create virtual devices for each Lutron device and control Lutron with them",
@@ -76,8 +76,10 @@ def initialize() {
         log.debug "Value of thisName at this point Line 76- $thisName"		//Printing value of thisName
     	def deviceId = "Lutron" + "$i-" + app.id				//Setting name of device
         def myDevice = getChildDevice(deviceId)
+         log.debug "Value of myDevice at this point Line 79- $myDevice"	
         if(!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])
         myDevice = getChildDevice(deviceId)
+        log.debug "Value of myDevice at this point Line 82- $myDevice"
         myDevice.name = thisCmd.value
         if(myDevice.name[0] in ['s', 'S']) {        			//  SSI or SDL, build map based on Lutron zone #
         	def iloc = myDevice.name.indexOf(',') + 1
@@ -127,12 +129,15 @@ def LutronHandler(evt) {
 
 def removeHandler(evt) {
 	unsubscribe()
+    log.debug "Activated removehandler method thing"
 }
 
 def uninstalled() {
 	removeChildDevices(getChildDevices())
+    log.debug "Activated uninstalled method thing"
 }
 
 private removeChildDevices(delete) {
 	delete.each {deleteChildDevice(it.deviceNetworkId)}
+    log.debug "Activated removechilddevices method thing"
 }

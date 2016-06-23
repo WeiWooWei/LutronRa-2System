@@ -6,3 +6,28 @@ Log output from first test
 82156142-1087-4f3e-93c8-38991522e8a2 5:20:39 PM: debug Initialized called from inside 'installed' method
 82156142-1087-4f3e-93c8-38991522e8a2 5:20:39 PM: debug Made it inside the main initialize function
 
+**Note...  this was at the app selection screen from the "marketplace"   it came up and gave me the mandatory fields to select.
+I selected 2 devices and this was all i got.
+
+I got the red box "something went wrong" thing... and oddly enough a green box saying the app was installed
+so i went to the app in my environment, so it was NOT in the marketplace.   
+
+It had the same mandatory fields and none were filled out.   I filled them out again with 3 as my number and hit "Done"
+and nothing happened except i got more mandatory fields that were related to the 3 count.   So three sets of "Command" and "Name"
+I used the convention of "Command #" for command and "Kitchen #" for name.
+
+I hit "Done" this time and got the follwing:
+
+
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:40 PM: debug Initialized called from inside 'updated' method
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:39 PM: debug Value of thisName at this point Line 76- dName2=Kitxhen3
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:39 PM: debug Value of thisCmd at this point line 74 - dCmd2=Command3
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:39 PM: debug Run through the for loop = 2
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:39 PM: debug Value of thisName at this point Line 76- dName1=Kitchen2
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:39 PM: debug Value of thisCmd at this point line 74 - dCmd1=Command 2
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:39 PM: debug Run through the for loop = 1
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:39 PM: debug Value of thisName at this point Line 76- dName0=Kitchen 1
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:39 PM: debug Value of thisCmd at this point line 74 - dCmd0=Command 1
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:39 PM: debug Run through the for loop = 0
+82156142-1087-4f3e-93c8-38991522e8a2 5:23:39 PM: debug Made it inside the main initialize function 
+

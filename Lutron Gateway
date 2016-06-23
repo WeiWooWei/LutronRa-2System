@@ -76,11 +76,12 @@ def initialize() {
         log.debug "Value of thisName at this point Line 76- $thisName"		//Printing value of thisName
     	def deviceId = "Lutron" + "$i-" + app.id				//Setting name of device
         def myDevice = getChildDevice(deviceId)
-         log.debug "Value of myDevice at this point Line 79- $myDevice"	
+        log.debug "Value of myDevice at this point Line 79- $myDevice"	
         if(!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])
         myDevice = getChildDevice(deviceId)
         log.debug "Value of childDevice at this point Line 82- $childDevice"
         myDevice.name = thisCmd.value
+        log.debug "my Device value = myDevice.name[0]"			//Adding print out of First element of my Device name.
         if(myDevice.name[0] in ['s', 'S']) {        			//  SSI or SDL, build map based on Lutron zone #
         	def iloc = myDevice.name.indexOf(',') + 1
 		def ndx = myDevice.name.substring(iloc).toInteger()

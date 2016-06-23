@@ -1,1 +1,8 @@
-Reserved for log output
+Log output from first test
+
+
+82156142-1087-4f3e-93c8-38991522e8a2 5:20:39 PM: debug Initialized called from inside 'updated' method
+82156142-1087-4f3e-93c8-38991522e8a2 5:20:39 PM: debug Made it inside the main initialize function
+82156142-1087-4f3e-93c8-38991522e8a2 5:20:39 PM: debug Initialized called from inside 'installed' method
+82156142-1087-4f3e-93c8-38991522e8a2 5:20:39 PM: debug Made it inside the main initialize function
+

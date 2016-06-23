@@ -44,10 +44,10 @@ def selectLutron() {								// This block builds the setup screen
 		}
 		section("Select Lutron Devices") {			// This block creates the individual devices in the app
 			for (int i = 0; i < howMany; i++) {		//Iterating through number of devices specified by user
-				def thisCmd = "dCmd$i"				//dCmd == Device Command.  This creates the box for the commmand
-				def thisName = "dName$i"			//dName == Device Name.  Creating box for device name.
-				getCmd(thisCmd, i + 1)				//Function call to insert your command text into the box.
-				getName(thisName, i + 1)			//Function call to insert your name into the box
+				def thisCmd = "dCmd$i"			//dCmd == Device Command.  This creates the box for the commmand
+				def thisName = "dName$i"		//dName == Device Name.  Creating box for device name.
+				getCmd(thisCmd, i + 1)			//Function call to insert your command text into the box.
+				getName(thisName, i + 1)		//Function call to insert your name into the box
                 		paragraph(" ")
 			}
 		}
@@ -56,23 +56,23 @@ def selectLutron() {								// This block builds the setup screen
 
 def installed() {
 	initialize()
-    log.debug "Initialized called from inside 'installed' method"	//Checking if we got here.
+    log.debug "Initialized called from inside 'installed' method"		//Checking if we got here.
 }
 
 def updated() {
 	unsubscribe()
 	initialize()
-    log.debug "Initialized called from inside 'updated' method"	//Checking if we got here.
+    log.debug "Initialized called from inside 'updated' method"			//Checking if we got here.
 }
 
 def initialize() {
-	state.myDevices = [:]										//Defining devices map
+	state.myDevices = [:]							//Defining devices map
 	log.debug "Made it inside the main initialize function"			//Test to see if we made it here
-	for (int i = 0 ; i < howMany; i++) {						//Iterating through number of devices specified by user
-	log.debug "Run through the for loop = $i"					//Showing which run through the loop we're on
-        def thisCmd = settings.find {it.key == "dCmd$i"}		// -Not sure here-
-        log.debug "Value of thisCmd at this point line 74 - $thisCmd"	//Printing value of thisCmd
-        def thisName = settings.find {it.key == "dName$i"}		// -Not sure here-
+	for (int i = 0 ; i < howMany; i++) {					//Iterating through number of devices specified by user
+	log.debug "Run through the for loop = $i"				//Showing which run through the loop we're on
+        def thisCmd = settings.find {it.key == "dCmd$i"}			// -Not sure here-
+        log.debug "Value of thisCmd at this point line 74 - $thisCmd"		//Printing value of thisCmd
+        def thisName = settings.find {it.key == "dName$i"}			// -Not sure here-
         log.debug "Value of thisName at this point Line 76- $thisName"		//Printing value of thisName
     	def deviceId = "Lutron" + "$i-" + app.id				//Setting name of device
         def myDevice = getChildDevice(deviceId)
@@ -84,9 +84,10 @@ def initialize() {
         if(myDevice.name[0] in ['s', 'S']) {        			//  SSI or SDL, build map based on Lutron zone #
         	def iloc = myDevice.name.indexOf(',') + 1
 		def ndx = myDevice.name.substring(iloc).toInteger()
-		state.myDevices << ["$ndx":deviceId]					//Adding the device name and ID into the device map
+		state.myDevices << ["$ndx":deviceId]				//Adding the device name and ID into the device map
         }
         if(myDevice.name[1] in ['d', 'D']) {					//  SDL, dimmer
+        	log.debug "We made it into the if test for a dimmer."		//Test to see if we make it into the loop.
         	subscribe(myDevice, "level", dimmerHandler)
 		subscribe(myDevice, "switch", dimOnOffHandler)
         } else subscribe(myDevice, "switch", switchHandler)

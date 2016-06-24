@@ -32,7 +32,7 @@ def getCmd(myCmd, n) {
 }
 
 def getSystem(mySys, n) {
-	def result = input mySys, "text", title: "System 2?", required: true
+	def result = input mySys, "text", title: "System 2? Y for Yes", required: true
 }
 def getName(myName, n) {
 	def result = input myName, "text", title: "Device Name #$n", required: true
@@ -103,9 +103,15 @@ def initialize() {
 
 def switchHandler(evt) {
 	def myDev = evt.device
-	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")
+	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }") 
 }
-
+/*I think we need to nest another test here.  If mySys = y or Y, then append ,S2 to the end of the message.
+	the problem is that there is no way to associate that Y with that device that was pressed as the code sits now.
+	We could have the virtual device created with a certain attribute perhaps and then append the S2 if that attribute is Y
+	or we could follow his convention and add S2 to the myDev.name to test it in position and then remove that Y after processing
+	so we don't mess up the command sequnce... or something
+	*/
+	
 def dimmerHandler(evt) {
 	def myDev = evt.device
 	Lutron.sendMsg("$myDev.name,$evt.value")

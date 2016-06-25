@@ -35,6 +35,9 @@ def getName(myName, n) {
 	def result = input myName, "text", title: "Device Name #$n", required: true
 }
 
+def getSystem(mySys, n) {
+	def result = input mySys, "text", title: "System 2? Y for Yes", required: true
+}
 def selectLutron() {								// This block builds the setup screen
 	dynamicPage(name: "selectLutron", title: "Lutron Gateway and Devices", uninstall: true, install: true) {
 		section("") {

@@ -96,14 +96,14 @@ def initialize() {
 
 def switchHandler(evt) {
 	def myDev = evt.device
-    if (evt.device.contains('S2') | evt.device.contains('s2')){		//Adding test to see if name of device contains S2
+    if (myDev.contains('S2') | myDev.contains('s2')){				//Adding test to see if name of device contains S2
     	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" },S2")	//If so, append 'S2' to the command
 	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")	//If not, run the original command
 }
 
 def dimmerHandler(evt) {
 	def myDev = evt.device
-    if (evt.device.contains('S2') | evt.device.contains('s2')){		//Adding test to see if name of device contains S2
+    if (myDev.contains('S2') | myDev.contains('s2')){			//Adding test to see if name of device contains S2
     	Lutron.sendMsg("$myDev.name,$evt.value,S2")			//If so, append 'S2' to the command
         } else Lutron.sendMsg("$myDev.name,$evt.value")			//If not, run the original command
 }
@@ -111,7 +111,7 @@ def dimmerHandler(evt) {
 def dimOnOffHandler(evt) {
 	def myDev = evt.device
 	def level = myDev.currentLevel ?: 100
-        if (evt.device.contains('S2') | evt.device.contains('s2')){	//Adding test to see if name of device contains S2
+        if (myDev.contains('S2') | myDev.contains('s2')){		//Adding test to see if name of device contains S2
         	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" },S2")	//If so, append 'S2' to the command
 	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")	//If not, run the original command
 }

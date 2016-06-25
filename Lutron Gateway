@@ -66,15 +66,15 @@ def updated() {
 }
 
 def initialize() {
-	state.myDevices = [:]										//Defining devices map
-	log.debug "Made it inside the initialize function"			//Test to see if we made it here
-	for (int i = 0 ; i < howMany; i++) {						//Iterating through number of devices specified by user
-	log.debug "Run through the for loop = $i"					//Showing which run through the loop we're on
+	state.myDevices = [:]						//Defining devices map
+	log.debug "Made it inside the initialize function"		//Test to see if we made it here
+	for (int i = 0 ; i < howMany; i++) {				//Iterating through number of devices specified by user
+	log.debug "Run through the for loop = $i"			//Showing which run through the loop we're on
         def thisCmd = settings.find {it.key == "dCmd$i"}		// -Not sure here-
-        log.debug "Value of thisCmd at this point - $thisCmd"	//Printing value of thisCmd
+        log.debug "Value of thisCmd at this point - $thisCmd"		//Printing value of thisCmd
         def thisName = settings.find {it.key == "dName$i"}		// -Not sure here-
         log.debug "Value of thisName at this point - $thisName"		//Printing value of thisName
-    	def deviceId = "Lutron" + "$i-" + app.id				//Setting name of device
+    	def deviceId = "Lutron" + "$i-" + app.id			//Setting name of device
         def myDevice = getChildDevice(deviceId)
         if(!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])
         myDevice = getChildDevice(deviceId)
@@ -82,9 +82,9 @@ def initialize() {
         if(myDevice.name[0] in ['s', 'S']) {        			//  SSI or SDL, build map based on Lutron zone #
         	def iloc = myDevice.name.indexOf(',') + 1
 		def ndx = myDevice.name.substring(iloc).toInteger()
-		state.myDevices << ["$ndx":deviceId]					//Adding the device name and ID into the device map
+		state.myDevices << ["$ndx":deviceId]			//Adding the device name and ID into the device map
         }
-        if(myDevice.name[1] in ['d', 'D']) {					//  SDL, dimmer
+        if(myDevice.name[1] in ['d', 'D']) {				//  SDL, dimmer
         	subscribe(myDevice, "level", dimmerHandler)
 		subscribe(myDevice, "switch", dimOnOffHandler)
         } else subscribe(myDevice, "switch", switchHandler)
@@ -96,24 +96,24 @@ def initialize() {
 
 def switchHandler(evt) {
 	def myDev = evt.device
-    if (evt.device.contains('S2') | evt.device.contains('s2')){
-    	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" },S2")
-	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")
+    if (evt.device.contains('S2') | evt.device.contains('s2')){		//Adding test to see if name of device contains S2
+    	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" },S2")	//If so, append 'S2' to the command
+	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")	//If not, run the original command
 }
 
 def dimmerHandler(evt) {
 	def myDev = evt.device
-    if (evt.device.contains('S2') | evt.device.contains('s2')){
-    	Lutron.sendMsg("$myDev.name,$evt.value,S2")
-        } else Lutron.sendMsg("$myDev.name,$evt.value")
+    if (evt.device.contains('S2') | evt.device.contains('s2')){		//Adding test to see if name of device contains S2
+    	Lutron.sendMsg("$myDev.name,$evt.value,S2")			//If so, append 'S2' to the command
+        } else Lutron.sendMsg("$myDev.name,$evt.value")			//If not, run the original command
 }
 
 def dimOnOffHandler(evt) {
 	def myDev = evt.device
 	def level = myDev.currentLevel ?: 100
-        if (evt.device.contains('S2') | evt.device.contains('s2')){
-        	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" },S2")
-	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")
+        if (evt.device.contains('S2') | evt.device.contains('s2')){	//Adding test to see if name of device contains S2
+        	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" },S2")	//If so, append 'S2' to the command
+	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")	//If not, run the original command
 }
 
 def LutronHandler(evt) {

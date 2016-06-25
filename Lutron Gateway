@@ -1,4 +1,4 @@
-/**
+ /**
  *  Lutron Gateway
  *
  *  Copyright 2015 Bruce Ravenel
@@ -96,14 +96,14 @@ def initialize() {
 
 def switchHandler(evt) {
 	def myDev = evt.device
-    if (evt.device.contains ('S2', 's2')) {
+    if (evt.device.contains('S2') | evt.device.contains('s2')){
     	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" },S2")
 	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")
 }
 
 def dimmerHandler(evt) {
 	def myDev = evt.device
-    if (evt.device.contains ('S2', 's2')) {
+    if (evt.device.contains('S2') | evt.device.contains('s2')){
     	Lutron.sendMsg("$myDev.name,$evt.value,S2")
         } else Lutron.sendMsg("$myDev.name,$evt.value")
 }
@@ -111,7 +111,7 @@ def dimmerHandler(evt) {
 def dimOnOffHandler(evt) {
 	def myDev = evt.device
 	def level = myDev.currentLevel ?: 100
-        if (evt.device.contains ('S2', 's2')) {
+        if (evt.device.contains('S2') | evt.device.contains('s2')){
         	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" },S2")
 	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")
 }

@@ -32,7 +32,7 @@ def getCmd(myCmd, n) {
 }
 
 def getSystem(mySys, n) {
-	def result = input mySys, "text", title: "System 2? Y for Yes", required: true
+	def result = input mySys, "text", title: "System 2? Y for Yes", required: false
 }
 def getName(myName, n) {
 	def result = input myName, "text", title: "Device Name #$n", required: true
@@ -103,7 +103,9 @@ def initialize() {
 
 def switchHandler(evt) {
 	def myDev = evt.device
-	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }") 
+    if (myDev.contains('S2') | myDev.contains('s2')){				//Adding test to see if name of device contains S2
+    	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" },S2")	//If so, append 'S2' to the command
+	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")	//If not, run the original command
 }
 /*I think we need to nest another test here.  If mySys = y or Y, then append ,S2 to the end of the message.
 	the problem is that there is no way to associate that Y with that device that was pressed as the code sits now.
@@ -114,13 +116,17 @@ def switchHandler(evt) {
 	
 def dimmerHandler(evt) {
 	def myDev = evt.device
-	Lutron.sendMsg("$myDev.name,$evt.value")
+    if (myDev.contains('S2') | myDev.contains('s2')){			//Adding test to see if name of device contains S2
+    	Lutron.sendMsg("$myDev.name,$evt.value,S2")			//If so, append 'S2' to the command
+        } else Lutron.sendMsg("$myDev.name,$evt.value")			//If not, run the original command
 }
 
 def dimOnOffHandler(evt) {
 	def myDev = evt.device
 	def level = myDev.currentLevel ?: 100
-	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")
+        if (myDev.contains('S2') | myDev.contains('s2')){		//Adding test to see if name of device contains S2
+        	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" },S2")	//If so, append 'S2' to the command
+	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")	//If not, run the original command
 }
 
 def LutronHandler(evt) {

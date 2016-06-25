@@ -1,4 +1,4 @@
-/**
+ /**
  *  Lutron Gateway
  *
  *  Copyright 2015 Bruce Ravenel
@@ -14,8 +14,8 @@
  *
  */
 definition(
-    name: "Lutron Gateway - Sandbox2",
-    namespace: "WeiWooWei",
+    name: "Lutron Gateway - Sandbox",
+    namespace: "TESTING",
     author: "Bruce Ravenel",
     description: "Create virtual devices for each Lutron device and control Lutron with them",
     category: "Convenience",
@@ -31,13 +31,13 @@ def getCmd(myCmd, n) {
 	def result = input myCmd, "text", title: "Lutron Command #$n", required: true
 }
 
-def getSystem(mySys, n) {
-	def result = input mySys, "text", title: "System 2? Y for Yes", required: true
-}
 def getName(myName, n) {
 	def result = input myName, "text", title: "Device Name #$n", required: true
 }
 
+def getSystem(mySys, n) {
+	def result = input mySys, "text", title: "System 2? Y for Yes", required: true
+}
 def selectLutron() {								// This block builds the setup screen
 	dynamicPage(name: "selectLutron", title: "Lutron Gateway and Devices", uninstall: true, install: true) {
 		section("") {
@@ -47,10 +47,10 @@ def selectLutron() {								// This block builds the setup screen
 		}
 		section("Select Lutron Devices") {			// This block creates the individual devices in the app
 			for (int i = 0; i < howMany; i++) {		//Iterating through number of devices specified by user
-				def thisCmd = "dCmd$i"			//dCmd == Device Command.  This creates the box for the commmand
-				def thisName = "dName$i"		//dName == Device Name.  Creating box for device name.
-				getCmd(thisCmd, i + 1)			//Function call to insert your command text into the box.
-				getName(thisName, i + 1)		//Function call to insert your name into the box
+				def thisCmd = "dCmd$i"				//dCmd == Device Command.  This creates the box for the commmand
+				def thisName = "dName$i"			//dName == Device Name.  Creating box for device name.
+				getCmd(thisCmd, i + 1)				//Function call to insert your command text into the box.
+				getName(thisName, i + 1)			//Function call to insert your name into the box
                 		paragraph(" ")
 			}
 		}
@@ -59,39 +59,35 @@ def selectLutron() {								// This block builds the setup screen
 
 def installed() {
 	initialize()
-    log.debug "Initialized called from inside 'installed' method"		//Checking if we got here.
+    log.debug "Initialized called from inside 'installed' method"	//Checking if we got here.
 }
 
 def updated() {
 	unsubscribe()
 	initialize()
-    log.debug "Initialized called from inside 'updated' method"			//Checking if we got here.
+    log.debug "Initialized called from inside 'updated' method"	//Checking if we got here.
 }
 
 def initialize() {
-	state.myDevices = [:]							//Defining devices map
-	log.debug "Made it inside the main initialize function"			//Test to see if we made it here
-	for (int i = 0 ; i < howMany; i++) {					//Iterating through number of devices specified by user
-	log.debug "Run through the for loop = $i"				//Showing which run through the loop we're on
-        def thisCmd = settings.find {it.key == "dCmd$i"}			// -Not sure here-
-        log.debug "Value of thisCmd at this point line 74 - $thisCmd"		//Printing value of thisCmd
-        def thisName = settings.find {it.key == "dName$i"}			// -Not sure here-
-        log.debug "Value of thisName at this point Line 76- $thisName"		//Printing value of thisName
-    	def deviceId = "Lutron" + "$i-" + app.id				//Setting name of device
+	state.myDevices = [:]						//Defining devices map
+	log.debug "Made it inside the initialize function"		//Test to see if we made it here
+	for (int i = 0 ; i < howMany; i++) {				//Iterating through number of devices specified by user
+	log.debug "Run through the for loop = $i"			//Showing which run through the loop we're on
+        def thisCmd = settings.find {it.key == "dCmd$i"}		// -Not sure here-
+        log.debug "Value of thisCmd at this point - $thisCmd"		//Printing value of thisCmd
+        def thisName = settings.find {it.key == "dName$i"}		// -Not sure here-
+        log.debug "Value of thisName at this point - $thisName"		//Printing value of thisName
+    	def deviceId = "Lutron" + "$i-" + app.id			//Setting name of device
         def myDevice = getChildDevice(deviceId)
-        log.debug "Value of myDevice at this point Line 79- $myDevice"	
         if(!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])
         myDevice = getChildDevice(deviceId)
-        log.debug "Value of childDevice at this point Line 82- $childDevice"
         myDevice.name = thisCmd.value
-        log.debug "my Device value = myDevice.name[0]"			//Adding print out of First element of my Device name.
         if(myDevice.name[0] in ['s', 'S']) {        			//  SSI or SDL, build map based on Lutron zone #
         	def iloc = myDevice.name.indexOf(',') + 1
 		def ndx = myDevice.name.substring(iloc).toInteger()
-		state.myDevices << ["$ndx":deviceId]				//Adding the device name and ID into the device map
+		state.myDevices << ["$ndx":deviceId]			//Adding the device name and ID into the device map
         }
-        if(myDevice.name[1] in ['d', 'D']) {					//  SDL, dimmer
-        	log.debug "We made it into the if test for a dimmer."		//Test to see if we make it into the loop.
+        if(myDevice.name[1] in ['d', 'D']) {				//  SDL, dimmer
         	subscribe(myDevice, "level", dimmerHandler)
 		subscribe(myDevice, "switch", dimOnOffHandler)
         } else subscribe(myDevice, "switch", switchHandler)
@@ -103,24 +99,24 @@ def initialize() {
 
 def switchHandler(evt) {
 	def myDev = evt.device
-	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }") 
+    if (myDev.contains('S2') | myDev.contains('s2')){				//Adding test to see if name of device contains S2
+    	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" },S2")	//If so, append 'S2' to the command
+	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")	//If not, run the original command
 }
-/*I think we need to nest another test here.  If mySys = y or Y, then append ,S2 to the end of the message.
-	the problem is that there is no way to associate that Y with that device that was pressed as the code sits now.
-	We could have the virtual device created with a certain attribute perhaps and then append the S2 if that attribute is Y
-	or we could follow his convention and add S2 to the myDev.name to test it in position and then remove that Y after processing
-	so we don't mess up the command sequnce... or something
-	*/
-	
+
 def dimmerHandler(evt) {
 	def myDev = evt.device
-	Lutron.sendMsg("$myDev.name,$evt.value")
+    if (myDev.contains('S2') | myDev.contains('s2')){			//Adding test to see if name of device contains S2
+    	Lutron.sendMsg("$myDev.name,$evt.value,S2")			//If so, append 'S2' to the command
+        } else Lutron.sendMsg("$myDev.name,$evt.value")			//If not, run the original command
 }
 
 def dimOnOffHandler(evt) {
 	def myDev = evt.device
 	def level = myDev.currentLevel ?: 100
-	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")
+        if (myDev.contains('S2') | myDev.contains('s2')){		//Adding test to see if name of device contains S2
+        	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" },S2")	//If so, append 'S2' to the command
+	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")	//If not, run the original command
 }
 
 def LutronHandler(evt) {
@@ -140,15 +136,12 @@ def LutronHandler(evt) {
 
 def removeHandler(evt) {
 	unsubscribe()
-    log.debug "Activated removehandler method thing"
 }
 
 def uninstalled() {
 	removeChildDevices(getChildDevices())
-    log.debug "Activated uninstalled method thing"
 }
 
 private removeChildDevices(delete) {
 	delete.each {deleteChildDevice(it.deviceNetworkId)}
-    log.debug "Activated removechilddevices method thing"
 }

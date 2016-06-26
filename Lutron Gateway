@@ -31,9 +31,10 @@ def getCmd(myCmd, n) {
 	def result = input myCmd, "text", title: "Lutron Command #$n", required: true
 }
 
-def getSystem(mySys, n) {
-	def result = input mySys, "text", title: "System 2? Y for Yes", required: false
-}
+//def getSystem(mySys, n) {
+//	def result = input mySys, "text", title: "System 2? Y for Yes", required: false
+//}
+
 def getName(myName, n) {
 	def result = input myName, "text", title: "Device Name #$n", required: true
 }
@@ -73,9 +74,9 @@ def initialize() {
 	log.debug "Made it inside the main initialize function"			//Test to see if we made it here
 	for (int i = 0 ; i < howMany; i++) {					//Iterating through number of devices specified by user
 	log.debug "Run through the for loop = $i"				//Showing which run through the loop we're on
-        def thisCmd = settings.find {it.key == "dCmd$i"}			// -Not sure here-
+        def thisCmd = settings.find {it.key == "dCmd$i"}			//If dCmd$i exists in the settings map, set thisCmd to that value
         log.debug "Value of thisCmd at this point line 74 - $thisCmd"		//Printing value of thisCmd
-        def thisName = settings.find {it.key == "dName$i"}			// -Not sure here-
+        def thisName = settings.find {it.key == "dName$i"}			//If dName$i exists in the settings map, set thisName to that value
         log.debug "Value of thisName at this point Line 76- $thisName"		//Printing value of thisName
     	def deviceId = "Lutron" + "$i-" + app.id				//Setting name of device
         def myDevice = getChildDevice(deviceId)
@@ -84,7 +85,7 @@ def initialize() {
         myDevice = getChildDevice(deviceId)
         log.debug "Value of childDevice at this point Line 82- $childDevice"
         myDevice.name = thisCmd.value
-        log.debug "my Device value = myDevice.name[0]"			//Adding print out of First element of my Device name.
+        log.debug "my Device[0] value = $myDevice.name[0]"			//Adding print out of First element of my Device name.
         if(myDevice.name[0] in ['s', 'S']) {        			//  SSI or SDL, build map based on Lutron zone #
         	def iloc = myDevice.name.indexOf(',') + 1
 		def ndx = myDevice.name.substring(iloc).toInteger()
@@ -102,10 +103,12 @@ def initialize() {
 }
 
 def switchHandler(evt) {
+	log.debug "Inside switchHandler, evt.device=$evt.device"		//Printing value of evt.device to log
 	def myDev = evt.device
-    if (myDev.contains('S2') | myDev.contains('s2')){				//Adding test to see if name of device contains S2
-    	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" },S2")	//If so, append 'S2' to the command
-	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")	//If not, run the original command
+    //if (myDev.contains('S2') | myDev.contains('s2')){				//Adding test to see if name of device contains S2
+    //	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" },S2")	//If so, append 'S2' to the command
+	//} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")	//If not, run the original command
+	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")	//The original command
 }
 /*I think we need to nest another test here.  If mySys = y or Y, then append ,S2 to the end of the message.
 	the problem is that there is no way to associate that Y with that device that was pressed as the code sits now.
@@ -115,18 +118,22 @@ def switchHandler(evt) {
 	*/
 	
 def dimmerHandler(evt) {
+	log.debug "Inside dimmerHandler, evt.device=$evt.device"		//Printing value of evt.device to log
 	def myDev = evt.device
-    if (myDev.contains('S2') | myDev.contains('s2')){			//Adding test to see if name of device contains S2
-    	Lutron.sendMsg("$myDev.name,$evt.value,S2")			//If so, append 'S2' to the command
-        } else Lutron.sendMsg("$myDev.name,$evt.value")			//If not, run the original command
+    //if (myDev.contains('S2') | myDev.contains('s2')){			//Adding test to see if name of device contains S2
+    //	Lutron.sendMsg("$myDev.name,$evt.value,S2")			//If so, append 'S2' to the command
+      //  } else Lutron.sendMsg("$myDev.name,$evt.value")			//If not, run the original command
+      Lutron.sendMsg("$myDev.name,$evt.value")			//The original command
 }
 
 def dimOnOffHandler(evt) {
+	log.debug "Inside dimOnOffHandler, evt.device=$evt.device"		//Printing value of evt.device to log
 	def myDev = evt.device
 	def level = myDev.currentLevel ?: 100
-        if (myDev.contains('S2') | myDev.contains('s2')){		//Adding test to see if name of device contains S2
-        	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" },S2")	//If so, append 'S2' to the command
-	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")	//If not, run the original command
+        //if (myDev.contains('S2') | myDev.contains('s2')){		//Adding test to see if name of device contains S2
+        //	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" },S2")	//If so, append 'S2' to the command
+	//} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")	//If not, run the original command
+	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")	//The original command
 }
 
 def LutronHandler(evt) {

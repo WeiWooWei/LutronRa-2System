@@ -72,11 +72,11 @@ def updated() {
 def initialize() {
 	state.myDevices = [:]
 	for (int i = 0 ; i < howMany; i++) {
-    	log.debug "Line 75 Value of myCmd is $thisCmd"
-        log.debug "Line 76 Value of settings.find is $settings.find"
+    	log.debug "Line 75 Value of thisCmd is $thisCmd"
+        log.debug "Line 76 Value of settings.find is $settings.find  At this point the def thisCmd line hasn't been run yet in the for loop"
         def thisCmd = settings.find {it.key == "dCmd$i"}
-        log.debug "Line 78 Value of myCmd is $thisCmd"
-        log.debug "Line 79 Value of settings.find is $settings.find"
+        log.debug "Line 78 Value of thisCmd is $thisCmd at this point the def thisCmd line has been run"
+        log.debug "Line 79 Value of settings.find is $settings.find at this point the def thisCmd line has been run"
         def thisName = settings.find {it.key == "dName$i"}
     	def deviceId = "Lutron" + "$i-" + app.id
         def myDevice = getChildDevice(deviceId)

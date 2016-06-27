@@ -14,9 +14,9 @@
  *
  */
 definition(
-    name: "Lutron Gateway",
-    namespace: "bravenel",
-    author: "Bruce Ravenel",
+    name: "MinimalistLutron Gateway",
+    namespace: "WeiWooWei",
+    author: "Bruce Ravenel with additional blundering by Tim and Fred",
     description: "Create virtual devices for each Lutron device and control Lutron with them",
     category: "Convenience",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",

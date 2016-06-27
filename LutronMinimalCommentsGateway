@@ -78,11 +78,16 @@ def initialize() {
         log.debug "Line 78 alue of thisCmd is $thisCmd at this point the def thisCmd line has been run"
         log.debug "Line 79  lue of settings.find is $settings.find at this point the def thisCmd line has been run"
         def thisName = settings.find {it.key == "dName$i"}
-    	def deviceId = "Lutron" + "$i-" + app.id
+    	log.debug "Line 81 Value of thisName is $thisName"
+        def deviceId = "Lutron" + "$i-" + app.id
         def myDevice = getChildDevice(deviceId)
         if(!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])
         myDevice = getChildDevice(deviceId)
+        log.debug "Line 86 alue of thisCmd is $thisCmd at this point the def thisCmd line has been run"
+        log.debug "Line 87 alue of thisCmd.value is $thisCmd.value at this point the def thisCmd line has been run"
         myDevice.name = thisCmd.value
+        log.debug "Line 89 alue of thisCmd is $thisCmd at this point the def thisCmd line has been run"
+        log.debug "Line 90 alue of thisCmd.value is $thisCmd.value at this point the def thisCmd line has been run"
         if(myDevice.name[0] in ['s', 'S']) {        //  SSI or SDL, build map based on Lutron zone #
         	def iloc = myDevice.name.indexOf(',') + 1
 		def ndx = myDevice.name.substring(iloc).toInteger()

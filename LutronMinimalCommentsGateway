@@ -36,7 +36,7 @@ def getName(myName, n) {
 }
 
 def getSystem(mySystem, n) {
-	def result = input mySystm, "text", title: "Is this System 2?  If yes enter S2", required: true
+	def result = input mySystm, "text", title: "Is this System 2?  If yes enter S2", required: false
     }
     
 def selectLutron() {
@@ -84,6 +84,7 @@ def initialize() {
         log.debug "Line 78 alue of thisCmd is $thisCmd at this point the def thisCmd line has been run"
         log.debug "Line 79  lue of settings.find is $settings.find at this point the def thisCmd line has been run"
         def thisName = settings.find {it.key == "dName$i"}
+        def thisSystem = settings.find {it.key == "dSystem$i"}
     	log.debug "Line 81 Value of thisName is $thisName"
         def deviceId = "Lutron" + "$i-" + app.id
         def myDevice = getChildDevice(deviceId)

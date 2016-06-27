@@ -42,10 +42,14 @@ def selectLutron() {
 			input "Remove", "capability.momentary", title: "Remove button", required: true, multiple: false
 			input "howMany", "number", title: "How many Lutron devices?", required: true, submitOnChange: true
 		}
-		section("Select Lutron Devices") {
+       		section("Select Lutron Devices") {
 			for (int i = 0; i < howMany; i++) {
-				def thisCmd = "dCmd$i"
-				def thisName = "dName$i"
+				 log.debug "Line 47 Value of myCmd is $myCmd"
+                 log.debug "Line 48 Value of thisCmd is $thisCmd"
+                def thisCmd = "dCmd$i"
+                log.debug "Line 48 Value of thisCmd is $thisCmd which is after he sets it with def thisCmd=dCmddollarsigni"
+				log.debug "Line 51 Value of myCmd is $myCmd"
+                def thisName = "dName$i"
 				getCmd(thisCmd, i + 1)
 				getName(thisName, i + 1)
                 		paragraph(" ")

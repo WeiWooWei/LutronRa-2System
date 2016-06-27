@@ -35,6 +35,10 @@ def getName(myName, n) {
 	def result = input myName, "text", title: "Device Name #$n", required: true
 }
 
+def getSystem(mySystem, n) {
+	def result = input mySystm, "text", title: "Is this System 2?  If yes enter S2", required: true
+    }
+    
 def selectLutron() {
 	dynamicPage(name: "selectLutron", title: "Lutron Gateway and Devices", uninstall: true, install: true) {
 		section("") {
@@ -50,8 +54,10 @@ def selectLutron() {
                 log.debug "Line 50 Value of thisCmd is $thisCmd which is after he sets it with def thisCmd=dCmddollarsigni"
 				log.debug "Line 51 Value of myCmd is $myCmd"
                 def thisName = "dName$i"
+                def thisSystem = "dSystem$i"
 				getCmd(thisCmd, i + 1)
 				getName(thisName, i + 1)
+                getSystem(thisSystem, i +1)
                 log.debug "Line 55 Value of thisCmd is $thisCmd which is after he sets it with def thisCmd=dCmddollarsigni"
                 log.debug "Line 56 Value of myCmd is $myCmd"
                 		paragraph(" ")
@@ -93,10 +99,10 @@ def initialize() {
 		def ndx = myDevice.name.substring(iloc).toInteger()
 		state.myDevices << ["$ndx":deviceId]
         }
-        if(myDevice.name[1] in ['d', 'D']) {		//  SDL, dimmer
+        if(myDevice.name[1] in ['d', 'D']) {		// If SDL, then this is a dimmer and handle it as such
         	subscribe(myDevice, "level", dimmerHandler)
 		subscribe(myDevice, "switch", dimOnOffHandler)
-        } else subscribe(myDevice, "switch", switchHandler)
+        } else subscribe(myDevice, "switch", switchHandler)  //and if not SDL, then we're assuming it's a switch and handle it as a switch
     }
     subscribe(Lutron, "msgRcvd", LutronHandler)
     subscribe(Remove, "switch.on", removeHandler)

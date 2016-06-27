@@ -47,11 +47,13 @@ def selectLutron() {
 				 log.debug "Line 47 Value of myCmd is $myCmd"
                  log.debug "Line 48 Value of thisCmd is $thisCmd"
                 def thisCmd = "dCmd$i"
-                log.debug "Line 48 Value of thisCmd is $thisCmd which is after he sets it with def thisCmd=dCmddollarsigni"
+                log.debug "Line 50 Value of thisCmd is $thisCmd which is after he sets it with def thisCmd=dCmddollarsigni"
 				log.debug "Line 51 Value of myCmd is $myCmd"
                 def thisName = "dName$i"
 				getCmd(thisCmd, i + 1)
 				getName(thisName, i + 1)
+                log.debug "Line 55 Value of thisCmd is $thisCmd which is after he sets it with def thisCmd=dCmddollarsigni"
+                log.debug "Line 56 Value of myCmd is $myCmd"
                 		paragraph(" ")
 			}
 		}
@@ -70,7 +72,11 @@ def updated() {
 def initialize() {
 	state.myDevices = [:]
 	for (int i = 0 ; i < howMany; i++) {
+    	log.debug "Line 75 Value of myCmd is $thisCmd"
+        log.debug "Line 76 Value of settings.find is $settings.find"
         def thisCmd = settings.find {it.key == "dCmd$i"}
+        log.debug "Line 78 Value of myCmd is $thisCmd"
+        log.debug "Line 79 Value of settings.find is $settings.find"
         def thisName = settings.find {it.key == "dName$i"}
     	def deviceId = "Lutron" + "$i-" + app.id
         def myDevice = getChildDevice(deviceId)

@@ -71,10 +71,16 @@ def updated() {
 
 def initialize() {
 	state.myDevices = [:]
+    	state.sysId = [:]					//Defining sysId map
 	for (int i = 0 ; i < howMany; i++) {
         def thisCmd = settings.find {it.key == "dCmd$i"}
         def thisSystem = settings.find {it.key == "dSystem$i"}
         def thisName = settings.find {it.key == "dName$i"}
+        String devId = thisName					//Assigning thisName to string devId
+        devId = devId - ~/dName\d+=/				//Trimming devId
+        String sysNum = thisSystem				//Assigning thisSystem to string sysNum
+        sysNum = sysNum  - ~/dSystem\d+=/			//Trimming sysNum
+        state.sysId << [ devId:sysNum ]				//Populating sysId map
     	def deviceId = "Lutron" + "$i-" + app.id
         def myDevice = getChildDevice(deviceId)
         if(!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])
@@ -98,19 +104,25 @@ def initialize() {
 
 def switchHandler(evt) {
 	def myDev = evt.device
-	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")
+    if (state.sysId.myDev == S2 | state.sysId.myDev == s2){
+    Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" },S2")	//If so, append 'S2' to the command
+    	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "on" : "off" }")	//If not, run the original command
 }
 
 def dimmerHandler(evt) {
 	def myDev = evt.device
-	Lutron.sendMsg("$myDev.name,$evt.value")
-}
+    if (state.sysId.myDev == S2 | state.sysId.myDev == s2){
+	Lutron.sendMsg("$myDev.name,$evt.value,S2")			//If so, append 'S2' to the command
+       } else Lutron.sendMsg("$myDev.name,$evt.value")			//If not, run the original command
+ }
 
 def dimOnOffHandler(evt) {
 	def myDev = evt.device
-	def level = myDev.currentLevel ?: 100
-	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")
-}
+    def level = myDev.currentLevel ?: 100
+    if (state.sysId.myDev == S2 | state.sysId.myDev == s2){
+	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" },S2")		//If so, append 'S2' to the command
+	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")	//If not, run the original command
+ }
 
 def LutronHandler(evt) {
 	if (evt.value.startsWith("LZC") && !evt.value.endsWith("CHG")) {  // process on/off of zone

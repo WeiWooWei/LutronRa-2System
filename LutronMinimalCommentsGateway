@@ -14,9 +14,9 @@
  *
  */
 definition(
-    name: "MinimalistLutron Gateway",
-    namespace: "WeiWooWei",
-    author: "Bruce Ravenel with additional blundering by Tim and Fred",
+    name: "Lutron Gateway",
+    namespace: "bravenel",
+    author: "Bruce Ravenel",
     description: "Create virtual devices for each Lutron device and control Lutron with them",
     category: "Convenience",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
@@ -31,14 +31,14 @@ def getCmd(myCmd, n) {
 	def result = input myCmd, "text", title: "Lutron Command #$n", required: true
 }
 
+def getSystem(mySystem, n) {
+	def result = input mySystem, "text", title: "Is this System 2?  If yes enter S2, if not enter No", required: true
+    }
+    
 def getName(myName, n) {
 	def result = input myName, "text", title: "Device Name #$n", required: true
 }
 
-def getSystem(mySystem, n) {
-	def result = input mySystem, "text", title: "Is this System 2?  If yes enter S2", required: false
-    }
-    
 def selectLutron() {
 	dynamicPage(name: "selectLutron", title: "Lutron Gateway and Devices", uninstall: true, install: true) {
 		section("") {
@@ -46,21 +46,15 @@ def selectLutron() {
 			input "Remove", "capability.momentary", title: "Remove button", required: true, multiple: false
 			input "howMany", "number", title: "How many Lutron devices?", required: true, submitOnChange: true
 		}
-       		section("Select Lutron Devices") {
+		section("Select Lutron Devices") {
 			for (int i = 0; i < howMany; i++) {
-				 log.debug "Line 51 Value of myCmd is $myCmd"
-                 log.debug "Line 52 Value of thisCmd is $thisCmd"
-                def thisCmd = "dCmd$i"
-                log.debug "Line 54 Value of thisCmd is $thisCmd which is after he sets it with def thisCmd=dCmddollarsigni"
-				log.debug "Line 55 Value of myCmd is $myCmd"
-                def thisName = "dName$i"
-                def thisSystem = "dSystem$i"
+				def thisCmd = "dCmd$i"
+				def thisName = "dName$i"
+				def thisSystem = "dSystem$i"
 				getCmd(thisCmd, i + 1)
+				getSystem(thisSystem, i +1)
 				getName(thisName, i + 1)
-                getSystem(thisSystem, i +1)
-                log.debug "Line 61 Value of thisSystem is $thisSystem"
-                log.debug "end of program start area"
-                paragraph(" ")
+                		paragraph(" ")
 			}
 		}
 	}
@@ -78,33 +72,24 @@ def updated() {
 def initialize() {
 	state.myDevices = [:]
 	for (int i = 0 ; i < howMany; i++) {
-    	log.debug "Line 81 Value of thisCmd is $thisCmd"
-        log.debug "We are in FOR LOOP $i"
         def thisCmd = settings.find {it.key == "dCmd$i"}
-        log.debug "Line 84 value of thisCmd is $thisCmd at this point the def thisCmd line has been run"
-        def thisName = settings.find {it.key == "dName$i"}
         def thisSystem = settings.find {it.key == "dSystem$i"}
-    	log.debug "Line 87 Value of thisName is $thisName"
-        def deviceId = "Lutron" + "$i-" + app.id
-        log.debug "Line 89 Value of deviceID is $deviceID"
+        def thisName = settings.find {it.key == "dName$i"}
+    	def deviceId = "Lutron" + "$i-" + app.id
         def myDevice = getChildDevice(deviceId)
-        log.debug "Line 91 Value of myDevice is $myDevice"
         if(!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])
         myDevice = getChildDevice(deviceId)
         myDevice.name = thisCmd.value
-        log.debug "Line 98 alue of thisCmd is $thisCmd at this point the def thisCmd line has been run"
-        log.debug "Line 99 alue of thisCmd.value is $thisCmd.value at this point the def thisCmd line has been run"
-        log.debug "Line 100 value of thisSystem is $thisSystem"
-        log.debug "Line 101 value of thisSystem.value is $thisSystem.value"
+        def theSystem = thisSystem.value //I don't think you need this  You probably can just use thisSystem.value but it made me feel less anxious to have it here.
         if(myDevice.name[0] in ['s', 'S']) {        //  SSI or SDL, build map based on Lutron zone #
-        def iloc = myDevice.name.indexOf(',') + 1
+        	def iloc = myDevice.name.indexOf(',') + 1
 		def ndx = myDevice.name.substring(iloc).toInteger()
 		state.myDevices << ["$ndx":deviceId]
         }
-        if(myDevice.name[1] in ['d', 'D']) {		// If SDL, then this is a dimmer and handle it as such
+        if(myDevice.name[1] in ['d', 'D']) {		//  SDL, dimmer
         	subscribe(myDevice, "level", dimmerHandler)
 		subscribe(myDevice, "switch", dimOnOffHandler)
-        } else subscribe(myDevice, "switch", switchHandler)  //and if not SDL, then we're assuming it's a switch and handle it as a switch
+        } else subscribe(myDevice, "switch", switchHandler)
     }
     subscribe(Lutron, "msgRcvd", LutronHandler)
     subscribe(Remove, "switch.on", removeHandler)

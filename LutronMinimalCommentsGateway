@@ -36,7 +36,7 @@ def getName(myName, n) {
 }
 
 def getSystem(mySystem, n) {
-	def result = input mySystm, "text", title: "Is this System 2?  If yes enter S2", required: false
+	def result = input mySystem, "text", title: "Is this System 2?  If yes enter S2", required: false
     }
     
 def selectLutron() {
@@ -48,19 +48,19 @@ def selectLutron() {
 		}
        		section("Select Lutron Devices") {
 			for (int i = 0; i < howMany; i++) {
-				 log.debug "Line 47 Value of myCmd is $myCmd"
-                 log.debug "Line 48 Value of thisCmd is $thisCmd"
+				 log.debug "Line 51 Value of myCmd is $myCmd"
+                 log.debug "Line 52 Value of thisCmd is $thisCmd"
                 def thisCmd = "dCmd$i"
-                log.debug "Line 50 Value of thisCmd is $thisCmd which is after he sets it with def thisCmd=dCmddollarsigni"
-				log.debug "Line 51 Value of myCmd is $myCmd"
+                log.debug "Line 54 Value of thisCmd is $thisCmd which is after he sets it with def thisCmd=dCmddollarsigni"
+				log.debug "Line 55 Value of myCmd is $myCmd"
                 def thisName = "dName$i"
                 def thisSystem = "dSystem$i"
 				getCmd(thisCmd, i + 1)
 				getName(thisName, i + 1)
                 getSystem(thisSystem, i +1)
-                log.debug "Line 55 Value of thisCmd is $thisCmd which is after he sets it with def thisCmd=dCmddollarsigni"
-                log.debug "Line 56 Value of myCmd is $myCmd"
-                		paragraph(" ")
+                log.debug "Line 61 Value of thisSystem is $thisSystem"
+                log.debug "end of program start area"
+                paragraph(" ")
 			}
 		}
 	}
@@ -78,25 +78,26 @@ def updated() {
 def initialize() {
 	state.myDevices = [:]
 	for (int i = 0 ; i < howMany; i++) {
-    	log.debug "Line 75 Value of thisCmd is $thisCmd"
-        log.debug "Line 76 Value of settings.find is $settings.find  At this point the def thisCmd line hasn't been run yet in the for loop"
+    	log.debug "Line 81 Value of thisCmd is $thisCmd"
+        log.debug "We are in FOR LOOP $i"
         def thisCmd = settings.find {it.key == "dCmd$i"}
-        log.debug "Line 78 alue of thisCmd is $thisCmd at this point the def thisCmd line has been run"
-        log.debug "Line 79  lue of settings.find is $settings.find at this point the def thisCmd line has been run"
+        log.debug "Line 84 value of thisCmd is $thisCmd at this point the def thisCmd line has been run"
         def thisName = settings.find {it.key == "dName$i"}
         def thisSystem = settings.find {it.key == "dSystem$i"}
-    	log.debug "Line 81 Value of thisName is $thisName"
+    	log.debug "Line 87 Value of thisName is $thisName"
         def deviceId = "Lutron" + "$i-" + app.id
+        log.debug "Line 89 Value of deviceID is $deviceID"
         def myDevice = getChildDevice(deviceId)
+        log.debug "Line 91 Value of myDevice is $myDevice"
         if(!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])
         myDevice = getChildDevice(deviceId)
-        log.debug "Line 86 alue of thisCmd is $thisCmd at this point the def thisCmd line has been run"
-        log.debug "Line 87 alue of thisCmd.value is $thisCmd.value at this point the def thisCmd line has been run"
         myDevice.name = thisCmd.value
-        log.debug "Line 89 alue of thisCmd is $thisCmd at this point the def thisCmd line has been run"
-        log.debug "Line 90 alue of thisCmd.value is $thisCmd.value at this point the def thisCmd line has been run"
+        log.debug "Line 98 alue of thisCmd is $thisCmd at this point the def thisCmd line has been run"
+        log.debug "Line 99 alue of thisCmd.value is $thisCmd.value at this point the def thisCmd line has been run"
+        log.debug "Line 100 value of thisSystem is $thisSystem"
+        log.debug "Line 101 value of thisSystem.value is $thisSystem.value"
         if(myDevice.name[0] in ['s', 'S']) {        //  SSI or SDL, build map based on Lutron zone #
-        	def iloc = myDevice.name.indexOf(',') + 1
+        def iloc = myDevice.name.indexOf(',') + 1
 		def ndx = myDevice.name.substring(iloc).toInteger()
 		state.myDevices << ["$ndx":deviceId]
         }

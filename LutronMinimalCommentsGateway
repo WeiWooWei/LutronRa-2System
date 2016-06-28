@@ -14,8 +14,8 @@
  *
  */
 definition(
-    name: "Lutron Gateway",
-    namespace: "bravenel",
+    name: "Lutron Gateway - Minimal",
+    namespace: "WeiWooWei",
     author: "Bruce Ravenel",
     description: "Create virtual devices for each Lutron device and control Lutron with them",
     category: "Convenience",

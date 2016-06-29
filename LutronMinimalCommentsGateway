@@ -76,10 +76,8 @@ def initialize() {
         def thisCmd = settings.find {it.key == "dCmd$i"}
         def thisSystem = settings.find {it.key == "dSystem$i"}
         def thisName = settings.find {it.key == "dName$i"}
-        String devId = thisName					//Assigning thisName to string devId
-        devId = devId - ~/dName\d+=/				//Trimming devId
-        String sysNum = thisSystem				//Assigning thisSystem to string sysNum
-        sysNum = sysNum  - ~/dSystem\d+=/			//Trimming sysNum
+        def devId = thisName.value				//Assigning thisName.value to devId	
+        def sysNum = thisSystem.value				//Assigning thisSystem.value to string sysNum
         state.sysId << [ devId:sysNum ]				//Populating sysId map
     	def deviceId = "Lutron" + "$i-" + app.id
         def myDevice = getChildDevice(deviceId)

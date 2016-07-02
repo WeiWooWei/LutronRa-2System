@@ -84,7 +84,7 @@ def initialize() {
 	state.myDevices = [:]
     state.myS2Devices = [:]
     	state.sysId = [:]					//Defining sysId map
-	if (howmanyS2 !="") {
+	if (howmanyS2 >0) {
     for (int i = 0 ; i < howManyS2; i++) {
         def thisS2Cmd = settings.find {it.key == "dS2Cmd$i"}
         log.debug "line 90 thisS2Cmd is $thisS2Cmd"
@@ -162,14 +162,13 @@ def dimOnOffHandler(evt) {
 	Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" },S2")		//If so, append 'S2' to the command
 	} else Lutron.sendMsg("$myDev.name,${evt.value == "on" ? "$level" : "0" }")	//If not, run the original command
  }
-
+log.debug "made it to line 165"
 def LutronHandler(evt) {
 	if (evt.value.startsWith("LZC") && !evt.value.endsWith("CHG")) {  // process on/off of zone
 		def ndx = evt.value.substring(evt.value[4] == "0" ? 5 : 4, 6)
          log.debug "this is ndx $ndx"
 		def device = getChildDevice(state.myDevices["$ndx"])
-         log.debug "this is printing now line after chg"
-		device.sendEvent(name: "switch", value: evt.value.endsWith("ON ") ? "on" : "off")
+        	device.sendEvent(name: "switch", value: evt.value.endsWith("ON ") ? "on" : "off")
 	} else if (evt.value.startsWith("ZMP") && !evt.value.endsWith("S2")) {			  // process zmp report to tie BP to zones
 		def zmp = evt.value.substring(3)
                for (int i = 1; i <= 32; i++) if(state.zmp[i] != zmp[i]) { // state changed
@@ -177,6 +176,14 @@ def LutronHandler(evt) {
 			device.sendEvent(name: "switch", value: zmp[i] == "1" ? "on" : "off")
 		}
     		state.zmp = zmp
+	}
+    else if (evt.value.startsWith("ZMP") && evt.value.endsWith("S2")) {			  // process zmp report to tie BP to zones
+		def zmp2 = evt.value.substring(3)
+               for (int i = 1; i <= 32; i++) if(state.zmp2[i] != zmp2[i]) { // state changed
+			def device = getChildDevice(state.myDevices["$i"])
+			device.sendEvent(name: "switch", value: zmp[i] == "1" ? "on" : "off")
+		}
+    		state.zmp2 = zmp2
 	}
 }
 

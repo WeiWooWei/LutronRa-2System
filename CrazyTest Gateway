@@ -34,6 +34,13 @@ def getCmd(myCmd, n) {
  def getName(myName, n) {
 	def result = input myName, "text", title: "Device Name #$n", required: true
 }
+def getS2Cmd(myS2Cmd, n) {
+	def result = input myS2Cmd, "text", title: "Lutron Command #$n", required: true
+}
+
+ def getS2Name(myS2Name, n) {
+	def result = input myS2Name, "text", title: "Device Name #$n", required: true
+}
 def selectLutron() {
 	dynamicPage(name: "selectLutron", title: "Lutron Gateway and Devices", uninstall: true, install: true) {
 		section("") {
@@ -53,10 +60,10 @@ def selectLutron() {
         }
         section("Select Lutron Devices System 2") {
 			for (int S2i = 0; S2i < howManyS2; S2i++) {
-				def thisS2Cmd = "dS2Cmd$i"
-				def thisS2Name = "dS2Name$i"
-				getCmd(thisS2Cmd, S2i + 1)
-				getName(thisS2Name, S2i + 1)
+				def thisS2Cmd = "dS2Cmd$S2i"
+				def thisS2Name = "dS2Name$S2i"
+				getS2Cmd(thisS2Cmd, S2i + 1)
+				getS2Name(thisS2Name, S2i + 1)
                 		paragraph(" ")
 		
 			}
@@ -80,10 +87,13 @@ def initialize() {
 	if (howmanyS2 !="") {
     for (int i = 0 ; i < howManyS2; i++) {
         def thisS2Cmd = settings.find {it.key == "dS2Cmd$i"}
+        log.debug "line 90 thisS2Cmd is $thisS2Cmd"
         def thisS2Name = settings.find {it.key == "dS2Name$i"}
+        log.debug "line 92"
         def devS2Id = thisS2Name.value				//Assigning thisName.value to devId	
+        log.debug "line 94"
         if (thisS2Cmd != "") {def thisSystem = S2}
-        def sysNum = "S2"				//Assigning thisSystem.value to string sysNum
+        def sysNum = "S2"				//Assigning S2 to string sysNum
         state.sysId << [ devS2Id:sysNum ]				//Populating sysId map
     	def deviceId = "Lutron" + "$i-S2-" + app.id
         def myS2Device = getChildDevice(deviceId)

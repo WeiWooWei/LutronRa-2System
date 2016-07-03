@@ -174,7 +174,7 @@ def LutronHandler(evt) {
       //         for (int i = 1; i <= 32; i++) if(state.zmp[i] != zmp[i]) { // state changed
 			//def device = getChildDevice(state.myDevices["$i"])
 			//device.sendEvent(name: "switch", value: zmp[i] == "1" ? "on" : "off")
-		}
+		//}
     		//state.zmp = zmp
 	 } else if (evt.value.startsWith("ZMP") && evt.value.endsWith("S2")) {			  // process zmp report to tie BP to zones
     log.debug "We're inside of the S2 ZMP message handler"
@@ -182,8 +182,8 @@ def LutronHandler(evt) {
     //           for (int i = 1; i <= 32; i++) if(state.zmp2[i] != zmp2[i]) { // state changed
 		//	def device = getChildDevice(state.myDevices["$i"])
 		//	device.sendEvent(name: "switch", value: zmp[i] == "1" ? "on" : "off")
-		}
-    		state.zmp2 = zmp2
+		//}
+    		//state.zmp2 = zmp2
 	}
 }
 

@@ -16,7 +16,7 @@
 definition(
     name: "Lutron Gateway - CrazyTest",
     namespace: "WeiWooWei",
-    author: "Bruce Ravenel",
+    author: "Bruce Ravenel with meddling from Tim and Fred",
     description: "Create virtual devices for each Lutron device and control Lutron with them",
     category: "Convenience",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
@@ -118,14 +118,14 @@ def initialize() {
         def thisCmd = settings.find {it.key == "dCmd$i"}
         def thisName = settings.find {it.key == "dName$i"}
         def devId = thisName.value				//Assigning thisName.value to devId	
-        def sysNum = thisSystem.value				//Assigning thisSystem.value to string sysNum
+        def sysNum = "S1"				//Assigning thisSystem.value to string sysNum
         state.sysId << [ devId:sysNum ]				//Populating sysId map
     	def deviceId = "Lutron" + "$i-" + app.id
         def myDevice = getChildDevice(deviceId)
         if (!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])
         	myDevice = getChildDevice(deviceId)
         	myDevice.name = thisCmd.value
-        def theSystem = thisSystem.value //I don't think you need this  You probably can just use thisSystem.value but it made me feel less anxious to have it here.
+        //def theSystem = thisSystem.value //I don't think you need this  You probably can just use thisSystem.value but it made me feel less anxious to have it here.
         if(myDevice.name[0] in ['s', 'S']) {        //  SSI or SDL, build map based on Lutron zone #
         	def iloc = myDevice.name.indexOf(',') + 1
 			def ndx = myDevice.name.substring(iloc).toInteger()
@@ -166,7 +166,7 @@ log.debug "made it to line 165"
 def LutronHandler(evt) {
 	if (evt.value.startsWith("LZC") && !evt.value.endsWith("CHG")) {  // process on/off of zone
 		def ndx = evt.value.substring(evt.value[4] == "0" ? 5 : 4, 6)
-         log.debug "this is ndx $ndx"
+        // log.debug "this is ndx $ndx"
 		def device = getChildDevice(state.myDevices["$ndx"])
         	device.sendEvent(name: "switch", value: evt.value.endsWith("ON ") ? "on" : "off")
 	} else if (evt.value.startsWith("ZMP") && !evt.value.endsWith("S2")) {			  // process zmp report to tie BP to zones

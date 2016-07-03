@@ -14,9 +14,9 @@
  *
  */
 definition(
-    name: "Lutron Gateway - CrazyTest",
+    name: "Lutron Gateway - Not so CrazyTest",
     namespace: "WeiWooWei",
-    author: "Bruce Ravenel",
+    author: "Bruce Ravenel with meddling by Tim and Fred",
     description: "Create virtual devices for each Lutron device and control Lutron with them",
     category: "Convenience",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
@@ -124,7 +124,7 @@ def initialize() {
         if (!myDevice) def childDevice = addChildDevice("smartthings", thisCmd.value[1] in ['d', 'D'] ? "Virtual Dimmer" : "On/Off Button Tile", deviceId, null, [label: thisName.value])
         	myDevice = getChildDevice(deviceId)
         	myDevice.name = thisCmd.value
-        def theSystem = thisSystem.value //I don't think you need this  You probably can just use thisSystem.value but it made me feel less anxious to have it here.
+        //def theSystem = thisSystem.value //I don't think you need this  You probably can just use thisSystem.value but it made me feel less anxious to have it here.
         if(myDevice.name[0] in ['s', 'S']) {        //  SSI or SDL, build map based on Lutron zone #
         	def iloc = myDevice.name.indexOf(',') + 1
 			def ndx = myDevice.name.substring(iloc).toInteger()

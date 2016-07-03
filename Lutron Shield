@@ -37,17 +37,19 @@ metadata {
 // Parse incoming device messages to generate events
 def parse(String description) {
 	def value = zigbee.parse(description)?.text
+    log.debug "value is $value"
 	if(value == 0 || value == "ping") return
 	def result = createEvent(name: "msgRcvd", value: value, isStateChange: true)
-	log.debug "Parse returned ${result?.descriptionText}"
+	log.debug "result is $result"
+    log.debug "msgRcvd is $msgRcvd"
+    log.debug "Parse returned ${result?.descriptionText}"
 	return result
 }
 
 // Commands sent to the device
 def sendMsg(String s) {
 	zigbee.smartShield(text: s).format()
-    log.debug "Line49 in Lutron Shield handler"
-}
+    }
 
 def hello() {
 	log.debug "Hello World!"
